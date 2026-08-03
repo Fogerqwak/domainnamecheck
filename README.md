@@ -3,6 +3,14 @@
 Finds startup names whose `.com` **and** `.ai` are both available, from a
 list of 10k-100k candidate names.
 
+## Why
+
+Picking a good startup name is hard. Checking if a name's domains are
+available is tedious: search `.com`, search `.ai`, write them down, repeat
+100 times. This tool automates it - feed it 10k names, get back the ones
+where both domains are free, ranked by how they sound. No more manual
+checking, no more false hope on half-available names.
+
 ## Usage
 
 ```bash
@@ -58,7 +66,10 @@ Availability is checked via RDAP (no HTML scraping):
 - `.ai`: `rdap.org/domain/{domain}` - IANA's RDAP bootstrap proxy. The
   registry's own host, `rdap.nic.ai`, doesn't resolve at all (checked
   2026-07-31 - DNS failure, not a rate limit), so this uses the bootstrap
-  redirector instead, which is still real RDAP, not scraping.
+  redirector instead, which is still real RDAP, not scraping. Cloudflare in
+  front of the actual .ai RDAP server 403s requests with aiohttp's default
+  User-Agent, so the session sends a browser-like one (see `run()` in
+  `scanner.py`) - without it every `.ai` lookup gets misclassified as taken.
 
 `HTTP 404` = available, `HTTP 200` = taken. This is configured in
 `Config.rdap_endpoints` in `scanner.py` - a plain `dict[tld] -> URL

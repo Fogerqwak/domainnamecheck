@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.venv
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Project outputs
+available_both.txt
+chosen.txt
+startup_names.progress
+startup_names.errors
+startup_names.txt
+
+# Temp files
+*.txt.bak
+test_names.txt

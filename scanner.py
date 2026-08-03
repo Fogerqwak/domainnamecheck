@@ -200,8 +200,16 @@ async def run(cfg: Config) -> None:
     except NotImplementedError:
         signal.signal(signal.SIGINT, lambda *_: stop_event.set())
 
+    # Cloudflare in front of the .ai registry's RDAP server 403s aiohttp's
+    # default User-Agent ("Python/3.14 aiohttp/..."); a browser-like UA
+    # passes. Without this every .ai lookup was misclassified TAKEN (403
+    # falls into classify_status's conservative default).
     async with aiohttp.ClientSession(
-        connector=connector, headers={"Accept": "application/rdap+json"}
+        connector=connector,
+        headers={
+            "Accept": "application/rdap+json",
+            "User-Agent": "Mozilla/5.0 (compatible; namescheck/1.0)",
+        },
     ) as session:
         with open(cfg.output_file, "a", buffering=1) as out_fh, open(
             cfg.progress_file, "a", buffering=1
